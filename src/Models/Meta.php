@@ -3,6 +3,7 @@
 namespace PortedCheese\SeoIntegration\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Meta extends Model
 {
@@ -39,6 +40,7 @@ class Meta extends Model
                 $data['meta_id'] = $meta->id;
                 Meta::create($data);
             }
+            $meta->forgetCache();
         });
 
         static::updated(function ($meta) {
@@ -51,6 +53,7 @@ class Meta extends Model
                 $data['meta_id'] = $meta->id;
                 $child->update($data);
             }
+            $meta->forgetCache();
         });
 
         static::deleted(function ($meta) {
@@ -58,6 +61,7 @@ class Meta extends Model
            if (!empty($child)) {
                $child->delete();
            }
+            $meta->forgetCache();
         });
     }
 
@@ -151,6 +155,72 @@ class Meta extends Model
             'success' => true,
             'model' => $model,
         ];
+    }
+
+    /**
+     * Получить мета для страницы.
+     *
+     * @param $page
+     * @return array|mixed
+     */
+    public static function getByPageKey($page)
+    {
+        $key = "meta-page:$page";
+        $cached = Cache::get($key);
+        if (!empty($cached)) {
+            return $cached;
+        }
+        $collection = Meta::where('page', $page)
+            ->get();
+        $rendered = [];
+        foreach ($collection as $item) {
+            $rendered[] = $item->render->render();
+        }
+        Cache::forever($key, $rendered);
+        return $rendered;
+    }
+
+    /**
+     * Получить для модели.
+     *
+     * @param $model
+     * @return array|mixed
+     */
+    public static function getByModelKey($model)
+    {
+        if (!method_exists($model, 'metas')) {
+            return [];
+        }
+        $key = "meta-model:{$model->table}{$model->id}";
+        $cached = Cache::get($key);
+        if (!empty($cached)) {
+            return $cached;
+        }
+        $collection = $model->metas;
+        $rendered = [];
+        foreach ($collection as $item) {
+            $rendered[] = $item->render->render();
+        }
+        Cache::forever($key, $rendered);
+        return $rendered;
+    }
+
+    /**
+     * Очистка кэша.
+     */
+    private function forgetCache()
+    {
+        if (!empty($this->page)) {
+            Cache::forget("meta-page:{$this->page}");
+        }
+        else {
+            $model = $this->metable;
+            if (empty($model)) {
+                return;
+            }
+            $key = "meta-model:{$model->table}{$model->id}";
+            Cache::forget($key);
+        }
     }
 
 }

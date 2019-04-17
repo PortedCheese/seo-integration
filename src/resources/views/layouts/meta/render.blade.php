@@ -1,5 +1,5 @@
 @if ($meta->name == 'title' && !$meta->property)
-        <title>{{ $meta->content }}</title>
+        <title>{{ $meta->content }} - {{ config('app.name', 'Laravel') }}</title>
 @else
         <meta
                 @if ($meta->content)

@@ -52,6 +52,21 @@
             </div>
 
             <div class="col-auto">
+                <label for="property" class="sr-only">Property</label>
+                <input type="text"
+                       id="property"
+                       name="property"
+                       value="{{ old('property') }}"
+                       placeholder="Property"
+                       class="form-control mb-2{{ $errors->has('property') ? ' is-invalid' : '' }}">
+                @if ($errors->has('property'))
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $errors->first('property') }}</strong>
+                    </span>
+                @endif
+            </div>
+
+            <div class="col-auto">
                 <button type="submit" class="btn btn-success mb-2">Создать</button>
             </div>
         </div>

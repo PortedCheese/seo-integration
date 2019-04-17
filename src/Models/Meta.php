@@ -33,12 +33,13 @@ class Meta extends Model
         static::created(function ($meta) {
             if (
                 in_array($meta->name, self::OGMETAS) &&
-                empty($meta->property)
+                empty($meta->property) &&
+                !$meta->separated
             ) {
                 $data = $meta->toArray();
                 $data['property'] = "og:{$meta->name}";
                 $data['meta_id'] = $meta->id;
-                Meta::create($data);
+                $newMeta = Meta::create($data);
             }
             $meta->forgetCache();
         });
@@ -51,6 +52,7 @@ class Meta extends Model
             ) {
                 $data = $meta->toArray();
                 $data['meta_id'] = $meta->id;
+                $data['property'] = $child->property;
                 $child->update($data);
             }
             $meta->forgetCache();
@@ -174,7 +176,11 @@ class Meta extends Model
             ->get();
         $rendered = [];
         foreach ($collection as $item) {
-            $rendered[] = $item->render->render();
+            $key = $item->name;
+            if (!empty($item->property)) {
+                $key .= "-{$item->property}";
+            }
+            $rendered[$key] = $item->render->render();
         }
         Cache::forever($key, $rendered);
         return $rendered;
@@ -199,7 +205,11 @@ class Meta extends Model
         $collection = $model->metas;
         $rendered = [];
         foreach ($collection as $item) {
-            $rendered[] = $item->render->render();
+            $key = $item->name;
+            if (!empty($item->property)) {
+                $key = $item->property;
+            }
+            $rendered[$key] = $item->render->render();
         }
         Cache::forever($key, $rendered);
         return $rendered;

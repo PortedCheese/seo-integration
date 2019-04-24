@@ -197,8 +197,8 @@ class Meta extends Model
         if (!method_exists($model, 'metas')) {
             return [];
         }
-        $key = "meta-model:{$model->table}{$model->id}";
-        $cached = Cache::get($key);
+        $cacheKey = "meta-model:{$model->table}{$model->id}";
+        $cached = Cache::get($cacheKey);
         if (!empty($cached)) {
             return $cached;
         }
@@ -211,7 +211,7 @@ class Meta extends Model
             }
             $rendered[$key] = $item->render->render();
         }
-        Cache::forever($key, $rendered);
+        Cache::forever($cacheKey, $rendered);
         return $rendered;
     }
 

@@ -9,8 +9,10 @@
             @include('seo-integration::admin.meta.create-static')
         </div>
         <div class="row">
-            <div class="table-responsive">
-                @include('seo-integration::admin.meta.table-pages', ['pages' => $pages])
+            <div class="col-12">
+                <div class="table-responsive">
+                    @include('seo-integration::admin.meta.table-pages', ['pages' => $pages])
+                </div>
             </div>
         </div>
     </div>

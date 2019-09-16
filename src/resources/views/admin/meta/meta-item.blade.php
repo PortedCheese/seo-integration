@@ -1,7 +1,9 @@
 <tr>
     <td>{{ $meta->id }}</td>
     <td>
-        {{ $meta->render }}
+        <code>
+            {!! htmlspecialchars($meta->render) !!}
+        </code>
     </td>
     <td>
         @if ($meta->separated)

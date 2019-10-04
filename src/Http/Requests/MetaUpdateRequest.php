@@ -24,8 +24,8 @@ class MetaUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'page' => 'required_if:model,off|min:2',
-            'name' => 'required',
+            'page' => 'required_if:model,off|min:2|max:250',
+            'name' => 'required|max:250',
             'content' => 'required',
         ];
     }

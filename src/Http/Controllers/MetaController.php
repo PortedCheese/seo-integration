@@ -117,6 +117,55 @@ class MetaController extends Controller
     }
 
     /**
+     * Получить изображение из модели.
+     * 
+     * @param Request $request
+     * @param $model
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function getImageByModel(Request $request, $model, $id)
+    {
+        $result = Meta::getModel($model, $id, "image");
+        if (! $result['success']) {
+            if (! empty($result['collection'])) {
+                $model = $result['model'];
+                if (empty($model->image->file_name)) {
+                    return redirect()
+                        ->back()
+                        ->with("danger", "Изображение не найдено");
+                }
+                $fileName = $model->image->file_name;
+                foreach ($result['collection'] as $item) {
+                    $item->content = $fileName;
+                    $item->save();
+                }
+                return redirect()
+                    ->back()
+                    ->with("success", "Изображение обновлено");
+            }
+            return redirect()
+                ->back()
+                ->with("danger", $result['message']);
+        }
+        $model = $result['model'];
+        if (empty($model->image->file_name)) {
+            return redirect()
+                ->back()
+                ->with("danger", "Изображение не найдено");
+        }
+        $meta = Meta::create([
+            "name" => "image",
+            "content" => $model->image->file_name,
+        ]);
+        $meta->metable()->associate($model);
+        $meta->save();
+        return redirect()
+            ->back()
+            ->with('success', 'Метатег добавлен');
+    }
+
+    /**
      * Страница редактирования.
      *
      * @param Request $request

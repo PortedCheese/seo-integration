@@ -15,6 +15,8 @@ Route::group([
         ->name('store-static');
     Route::post('/{model}/{id}', 'MetaController@storeModel')
         ->name('store-model');
+    Route::put('/{model}/{id}/image', 'MetaController@getImageByModel')
+        ->name('image-model');
     // Редактирование.
     Route::get('/{meta}', 'MetaController@edit')
         ->name('edit');

@@ -150,6 +150,8 @@ class Meta extends Model
                 return [
                     'success' => false,
                     'message' => 'Такой метатег уже существует',
+                    'collection' => $collection,
+                    'model' => $model,
                 ];
             }
         }

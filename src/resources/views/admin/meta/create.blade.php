@@ -55,4 +55,10 @@
             </div>
         </div>
     </form>
+
+    <form action="{{ route("admin.meta.image-model", ['model' => $model, "id" => $id]) }}" method="post">
+        @csrf
+        @method("put")
+        <button type="submit" class="btn btn-warning my-2">Взять изображение из материала</button>
+    </form>
 </div>

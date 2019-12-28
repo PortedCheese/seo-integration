@@ -4,16 +4,7 @@
 @section('header-title', 'Meta list')
 
 @section('admin')
-    <div class="container">
-        <div class="row">
-            @include('seo-integration::admin.meta.create-static')
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="table-responsive">
-                    @include('seo-integration::admin.meta.table-pages', ['pages' => $pages])
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('seo-integration::admin.meta.create-static')
+
+    @include('seo-integration::admin.meta.table-pages', ['pages' => $pages])
 @endsection

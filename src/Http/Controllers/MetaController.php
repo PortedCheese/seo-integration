@@ -4,6 +4,7 @@ namespace PortedCheese\SeoIntegration\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use PortedCheese\SeoIntegration\Http\Requests\MetaModelStoreRequest;
 use PortedCheese\SeoIntegration\Http\Requests\MetaStaticStoreRequest;
 use PortedCheese\SeoIntegration\Http\Requests\MetaUpdateRequest;
@@ -33,12 +34,14 @@ class MetaController extends Controller
      * @param MetaStaticStoreRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function storeStatic(MetaStaticStoreRequest $request)
+    public function storeStatic(Request $request)
     {
+        $this->validateStatic($request->all());
         $userInput = $request->all();
         $name = $userInput['name'];
         $page = $userInput['page'];
-        $collection = Meta::where('name', $name)
+        $collection = Meta::query()
+            ->where('name', $name)
             ->where('page', $page)
             ->get();
         if ($collection->count()) {
@@ -50,6 +53,24 @@ class MetaController extends Controller
         return redirect()
             ->route('admin.meta.index')
             ->with('success', 'Метатег добавлен');
+    }
+
+    /**
+     * Валидация для стараницы.
+     *
+     * @param $data
+     */
+    protected function validateStatic($data)
+    {
+        Validator::make($data, [
+            "page" => ["required", "min:2", "max:250"],
+            "name" => ["required", "max:250"],
+            "content" => ["required"],
+        ], [], [
+            "page" => "Страница",
+            "name" => "Name",
+            "content" => "Content",
+        ]);
     }
 
     /**
@@ -79,6 +100,22 @@ class MetaController extends Controller
     }
 
     /**
+     * Валидация добавления для модели.
+     *
+     * @param $data
+     */
+    protected function validateModel($data)
+    {
+        Validator::make($data, [
+            "name" => ["required", "max:250"],
+            "content" => ["required"],
+        ], [], [
+            "name" => "Name",
+            "content" => "Content",
+        ])->validate();
+    }
+
+    /**
      * Страница редактирования.
      *
      * @param Request $request
@@ -94,7 +131,7 @@ class MetaController extends Controller
                     'destination' => redirect()->back()->getTargetUrl()
                 ]));
         }
-        $hasModel = !empty($meta->metable);
+        $hasModel = ! empty($meta->metable);
         $route = 'admin.meta.update-' . ($hasModel ? 'model' : 'static');
         return view("seo-integration::admin.meta.update", [
             'meta' => $meta,
@@ -125,6 +162,25 @@ class MetaController extends Controller
             ->back()
             ->setTargetUrl($userInput['back'])
             ->with('success', 'Метатег обновлен');
+    }
+
+    /**
+     * Валидация обновления.
+     *
+     * @param $data
+     */
+    protected function updateValidator($data)
+    {
+        Validator::make($data, [
+            "page" => ["required_if:model,off", "min:2", "max:250"],
+            "name" => ["required", "max:250"],
+            "content" => ["required"],
+        ], [] ,[
+            "page" => "Стараница",
+            "model" => "Тип материала",
+            "name" => "Name",
+            "content" => "Content",
+        ])->validate();
     }
 
     /**

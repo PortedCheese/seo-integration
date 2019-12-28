@@ -6,12 +6,6 @@ use PortedCheese\SeoIntegration\Models\Meta;
 
 trait HasMetas
 {
-    protected static function boot()
-    {
-        parent::boot();
-        self::metasBoot();
-    }
-
     protected static function metasBoot()
     {
         static::created(function($model) {

@@ -81,8 +81,9 @@ class MetaController extends Controller
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function storeModel(MetaModelStoreRequest $request, $model, $id)
+    public function storeModel(Request $request, $model, $id)
     {
+        $this->validateModel($request->all());
         $userInput = $request->all();
         $result = Meta::getModel($model, $id, $userInput['name']);
         if (!$result['success']) {
@@ -148,8 +149,9 @@ class MetaController extends Controller
      * @param Meta $meta
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(MetaUpdateRequest $request, Meta $meta)
+    public function update(Request $request, Meta $meta)
     {
+        $this->updateValidator($request->all());
         $userInput = $request->all();
         if (empty($userInput['separated'])) {
             $userInput['separated'] = 0;

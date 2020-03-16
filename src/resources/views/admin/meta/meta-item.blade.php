@@ -14,22 +14,32 @@
 
     </td>
     <td>
-        <confirm-delete-model-button model-id="{{ $meta->id }}">
-            <template slot="edit">
-                <a href="{{ route('admin.meta.edit', ['meta' => $meta]) }}"
-                   class="btn btn-primary">
-                    <i class="far fa-edit"></i>
-                </a>
-            </template>
-            <template slot="delete">
-                <form action="{{ route('admin.meta.destroy', ['meta' => $meta]) }}"
-                      id="delete-{{ $meta->id }}"
-                      class="btn-group"
-                      method="post">
-                    @csrf
-                    <input type="hidden" name="_method" value="DELETE">
-                </form>
-            </template>
-        </confirm-delete-model-button>
+        @can("update", $meta)
+            <div role="toolbar" class="btn-toolbar">
+                <div class="btn-group mr-1">
+                    <a href="{{ route("admin.meta.edit", ["meta" => $meta]) }}" class="btn btn-primary">
+                        <i class="far fa-edit"></i>
+                    </a>
+                    @can("delete", $meta)
+                        <button type="button" class="btn btn-danger" data-confirm="{{ "delete-form-{$meta->id}" }}">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    @endcan
+                </div>
+            </div>
+            @can("delete", $meta)
+                <confirm-form :id="'{{ "delete-form-{$meta->id}" }}'">
+                    <template>
+                        <form action="{{ route('admin.meta.destroy', ['meta' => $meta]) }}"
+                              id="delete-form-{{ $meta->id }}"
+                              class="btn-group"
+                              method="post">
+                            @csrf
+                            <input type="hidden" name="_method" value="DELETE">
+                        </form>
+                    </template>
+                </confirm-form>
+            @endcan
+        @endcan
     </td>
 </tr>

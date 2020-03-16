@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Meta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use PortedCheese\SeoIntegration\Http\Requests\MetaModelStoreRequest;
-use PortedCheese\SeoIntegration\Http\Requests\MetaStaticStoreRequest;
 
 class MetaController extends Controller
 {
@@ -15,10 +13,14 @@ class MetaController extends Controller
      * Список мета, которые не привязаны к материалу.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index()
     {
-        $metas = Meta::whereNotNull('page')
+        $this->authorize("viewAny", Meta::class);
+
+        $metas = Meta::query()
+            ->whereNotNull('page')
             ->get()
             ->sortBy('page')
             ->groupBy('page');
@@ -30,11 +32,14 @@ class MetaController extends Controller
     /**
      * Сохраняем мета тэг, который не привязан к материалу.
      *
-     * @param MetaStaticStoreRequest $request
+     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function storeStatic(Request $request)
     {
+        $this->authorize("create", Meta::class);
+
         $this->validateStatic($request->all());
         $userInput = $request->all();
         $name = $userInput['name'];
@@ -75,13 +80,16 @@ class MetaController extends Controller
     /**
      * Создать мета для модели.
      *
-     * @param MetaModelStoreRequest $request
+     * @param Request $request
      * @param $model
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function storeModel(Request $request, $model, $id)
     {
+        $this->authorize("create", Meta::class);
+
         $this->validateModel($request->all());
         $userInput = $request->all();
         $result = Meta::getModel($model, $id, $userInput['name']);
@@ -117,14 +125,17 @@ class MetaController extends Controller
 
     /**
      * Получить изображение из модели.
-     * 
+     *
      * @param Request $request
      * @param $model
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function getImageByModel(Request $request, $model, $id)
     {
+        $this->authorize("create", Meta::class);
+
         $result = Meta::getModel($model, $id, "image");
         if (! $result['success']) {
             if (! empty($result['collection'])) {
@@ -170,9 +181,12 @@ class MetaController extends Controller
      * @param Request $request
      * @param Meta $meta
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Request $request, Meta $meta)
     {
+        $this->authorize("update", Meta::class);
+
         if (!$request->has('destination')) {
             return redirect()
                 ->back()
@@ -196,9 +210,12 @@ class MetaController extends Controller
      * @param Request $request
      * @param Meta $meta
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Meta $meta)
     {
+        $this->authorize("update", Meta::class);
+
         $this->updateValidator($request->all());
         $userInput = $request->all();
         if (empty($userInput['separated'])) {
@@ -238,10 +255,12 @@ class MetaController extends Controller
      *
      * @param Meta $meta
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Exception
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Meta $meta)
     {
+        $this->authorize("delete", Meta::class);
+
         $meta->delete();
         return redirect()
             ->back()

@@ -3,12 +3,11 @@
 namespace PortedCheese\SeoIntegration\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Meta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PortedCheese\SeoIntegration\Http\Requests\MetaModelStoreRequest;
 use PortedCheese\SeoIntegration\Http\Requests\MetaStaticStoreRequest;
-use PortedCheese\SeoIntegration\Http\Requests\MetaUpdateRequest;
-use PortedCheese\SeoIntegration\Models\Meta;
 
 class MetaController extends Controller
 {
@@ -194,7 +193,7 @@ class MetaController extends Controller
     /**
      * Обновление.
      *
-     * @param MetaUpdateRequest $request
+     * @param Request $request
      * @param Meta $meta
      * @return \Illuminate\Http\RedirectResponse
      */

@@ -2,7 +2,9 @@
 
 namespace PortedCheese\SeoIntegration\Traits;
 
-use PortedCheese\SeoIntegration\Models\Meta;
+
+
+use App\Meta;
 
 trait HasMetas
 {

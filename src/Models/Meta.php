@@ -39,7 +39,7 @@ class Meta extends Model
                 $data = $meta->toArray();
                 $data['property'] = "og:{$meta->name}";
                 $data['meta_id'] = $meta->id;
-                $newMeta = Meta::create($data);
+                $newMeta = \App\Meta::create($data);
             }
             $meta->forgetCache();
         });
@@ -74,7 +74,7 @@ class Meta extends Model
      */
     public function child()
     {
-        return $this->hasOne("PortedCheese\SeoIntegration\Models\Meta", 'meta_id');
+        return $this->hasOne(\App\Meta::class, 'meta_id');
     }
 
     /**
@@ -84,7 +84,7 @@ class Meta extends Model
      */
     public function parent()
     {
-        return $this->belongsTo("PortedCheese\SeoIntegration\Models\Meta", 'meta_id');
+        return $this->belongsTo(\App\Meta::class, 'meta_id');
     }
 
     /**
@@ -174,7 +174,7 @@ class Meta extends Model
         if (!empty($cached)) {
             return $cached;
         }
-        $collection = Meta::where('page', $page)
+        $collection = \App\Meta::where('page', $page)
             ->get();
         $rendered = [];
         foreach ($collection as $item) {

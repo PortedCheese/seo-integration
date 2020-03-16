@@ -3,6 +3,7 @@
 namespace PortedCheese\SeoIntegration;
 
 use Illuminate\Support\ServiceProvider;
+use PortedCheese\SeoIntegration\Console\Commands\MetaMakeCommand;
 
 class SeoIntegrationServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,12 @@ class SeoIntegrationServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/config/seo-integration.php' => config_path('seo-integration.php'),
         ], 'config');
+        // Console.
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MetaMakeCommand::class,
+            ]);
+        }
     }
 
     public function register()

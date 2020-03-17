@@ -10,7 +10,11 @@
 
     php artisan migrate
     
-    php artisan make:seo --all
+    php artisan make:seo {--all : Run all}
+                         {--models : Export models}
+                         {--controllers : Export controllers}
+                         {--policies : Export and create rules}
+                         {--only-default : Create default rules}
 
 #### Вывод формы добавляения тегов для пользователя
     @include("seo-integration::admin.meta.create", ['model' => 'users', 'id' => Auth::user()->id])
@@ -28,7 +32,7 @@
         - Настроены права на мета
     Обновление:
         - изменить меню на шаблон seo-integration::admin.meta.menu
-        - php artisan make:seo --policies --only-default
+        - php artisan make:seo --all
     
     v1.1.1:
         - Добавлена команда

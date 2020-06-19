@@ -11,7 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "portedcheese/base-settings": "^1.0"
+        "portedcheese/base-settings": "^1.5"
     },
     "autoload": {
         "psr-4": {

@@ -5,7 +5,7 @@
             @isset($ico)
                 <i class="{{ $ico }}"></i>
             @endisset
-            Мета
+            <span>Мета</span>
         </a>
     </li>
 @endcan

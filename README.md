@@ -27,6 +27,10 @@
 
 ### Versions
 
+    v1.4.1: fix vendorName
+    v1.4.0: base-settings v3.0
+    v1.3.0: base-settings v2.0
+    v1.2.1: Change menu for sb-admin
     v1.1.3:
         - Добавлен новый trait ShouldMetas
         - Теперь не нужно вызывать функцию в boot

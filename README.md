@@ -27,6 +27,7 @@
 
 ### Versions
 
+    v1.5.0: base-settings v4.1 (image-filter route)
     v1.4.1: fix vendorName
     v1.4.0: base-settings v3.0
     v1.3.0: base-settings v2.0
